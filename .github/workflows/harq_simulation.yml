@@ -1,0 +1,61 @@
+name: HARQ Simulation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  simulate:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up C++ compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++
+
+      - name: Compile HARQ simulator
+        run: |
+          g++ -std=c++17 \
+            cpp/main.cpp \
+            cpp/channel.cpp \
+            cpp/harq_process.cpp \
+            cpp/simulator.cpp \
+            -o harq_simulator
+
+      - name: Run HARQ simulator
+        run: |
+          ./harq_simulator
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r python/requirements.txt
+
+      - name: Generate plots
+        run: |
+          python python/plot_results.py
+
+      - name: Analyze results
+        run: |
+          python python/analyze_results.py
+
+      - name: Upload simulation results
+        uses: actions/upload-artifact@v4
+        with:
+          name: harq-simulation-results
+          path: |
+            results/harq_results.csv
+            results/figures/
