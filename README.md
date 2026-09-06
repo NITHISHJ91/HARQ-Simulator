@@ -73,3 +73,11 @@ HARQ-Simulator/
 ├── README.md
 ├── .gitignore
 └── LICENSE
+
+
+## Contributors
+
+| Name | Contribution |
+|------|--------------|
+| NITHISH J 
+| NITHISH M R 
